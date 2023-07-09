@@ -1,9 +1,8 @@
 var form = document.getElementById('details');
 //add event listener
 form.addEventListener('submit', addUser);
-
 //giving functionality
-function addUser(e){
+function addUser(e) {
     e.preventDefault();
     var name = document.getElementById('name').value;
     var email = document.getElementById('email').value;
@@ -27,12 +26,23 @@ function addUser(e){
     li.appendChild(document.createTextNode(number));
     li.appendChild(document.createElement('br'));
 
+
+
+    var deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.addEventListener('click', function () {
+        // Remove user data from local storage
+        localStorage.removeItem(userId);
+        // Remove user item from the displayed list
+        li.remove();
+    });
+    li.appendChild(deleteButton);
     var userList = document.getElementById('users');
     userList.appendChild(li);
 }
 function generateUserId() {
-        // Implement your logic to generate a unique identifier
-        // This can be a random string, a timestamp, or any other unique value
-        // Return the generated identifier
-        return "user_" + Math.random().toString(36).slice(2, 11);
- }
+    // Implement your logic to generate a unique identifier
+    // This can be a random string, a timestamp, or any other unique value
+    // Return the generated identifier
+    return "user_" + Math.random().toString(36).slice(2, 11);
+}
