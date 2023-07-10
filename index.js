@@ -42,12 +42,12 @@ function addUser(e) {
 
     //creating the delete button
     var deleteButton = document.createElement('button');//abhi doc kohmne kheecha apne pas
-    deleteButton.textContent = 'remove'; 
+    deleteButton.textContent = 'remove';
     deleteButton.addEventListener('click', deleteUser);
     // when working with elements that already exist in the HTML markup(like the form), you can access them using 
     //document.getElementById and attach event listeners to them.However, when creating elements 
     // dynamically, you can directly add event listeners to them before appending them to the DOM.
-    function deleteUser(e){
+    function deleteUser(e) {
         localStorage.removeItem(userID);
         li.remove();
     }
@@ -57,10 +57,38 @@ function addUser(e) {
     var userList = document.getElementById('users');
     userList.appendChild(li);
 
-     // Reset the form inputs
-     form.reset();
+    //creating edit button
+    var editButton = document.createElement('button');
+    //giving functionality to it
+    editButton.textContent = 'edit';
+    editButton.addEventListener('click', editDetails);
+    function editDetails(e) {
+        //localStorage.removeItem(userID);
+        //retrive the data from local storage
+        var retrievedUserDataString = localStorage.getItem(userID);
+        //retrieved data is in the string object from so we need to convert back
+        var retrievedUserData = JSON.parse(retrievedUserDataString);
+
+
+        // Populate the form with the user details for editing
+        document.getElementById('name').value = retrievedUserData.name;
+        document.getElementById('email').value = retrievedUserData.email;
+        document.getElementById('number').value = retrievedUserData.number;
+        
+        //remove the data from local and list so that new data
+        //can be entered in place of old data
+        li.remove();
+        localStorage.removeItem(userID);
+    }
+    li.appendChild(editButton);
+    var userLi = document.getElementById('users');
+    userLi.appendChild(li);
+
+
+    // Reset the form inputs
+    form.reset();
 
 }
-function generateUserId(){
+function generateUserId() {
     return "user_" + Math.random().toString(36).slice(2, 11);
 }
