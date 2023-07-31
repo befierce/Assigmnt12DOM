@@ -1,94 +1,85 @@
 var form = document.getElementById('details');
-form.addEventListener('submit', addUser);
-// When adding the event listener to the form, you use form.addEventListener('submit', addUser). 
-// In this case, form refers to the form element itself, which is obtained using document.getElementById('details'). 
-// This approach is used because you want to listen for the form's submit event and invoke 
-// the addUser function when the form is submitted.
+        form.addEventListener('submit', addUser);
 
-function addUser(e) {
-    e.preventDefault();
-    var name = document.getElementById('name').value;
-    var email = document.getElementById('email').value;
-    var number = document.getElementById('number').value;
+        function addUser(e) {
+            e.preventDefault();
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var number = document.getElementById('number').value;
 
-    //<!--SAVING DATA TO LOCAL STORATGE-->//
-    var userData = {
-        name: name,
-        email: email,
-        number: number
-    };
-    var userDataString = JSON.stringify(userData);
-    var userID = generateUserId();//create random USER ID to take 
-    //multiple users
-    localStorage.setItem(userID, userDataString);
-    //--------------------------------------//
+            // Saving data to the local storage
+            var userData = {
+                name: name,
+                email: email,
+                number: number
+            };
+            var userID = generateUserId();
 
-    //<!--breakdown of ADDING USER DATA TO LIST ITEMS-->//
-    //li elemtnt create kia document mai
-    var li = document.createElement('li');
-    //usko classname diya
-    li.className = 'list-group-item';
-    //variable liya usme text node create kiya
-    var liname = document.createTextNode(name);
-    //us variable ko li ka child bna diya means text node ko
-    //li mai as a child create kr diai
-    li.appendChild(liname);
-    li.appendChild(document.createElement('br'));//is code ka
-    //breakdown same hai
-    li.appendChild(document.createTextNode(email));
-    li.appendChild(document.createElement('br'));
-    li.appendChild(document.createTextNode(number));
-    li.appendChild(document.createElement('br'));
+            // making network calls
+            axios.post("https://crudcrud.com/api/ed2cdcf07b7a489bbf767198d25a7f7c/AppointmentData", userData)
+                .then((response) => { displayDataOnScreen(response.data); })
+                .catch((err) => { console.log(err) })
 
-    //creating the delete button
-    var deleteButton = document.createElement('button');//abhi doc kohmne kheecha apne pas
-    deleteButton.textContent = 'remove';
-    deleteButton.addEventListener('click', deleteUser);
-    // when working with elements that already exist in the HTML markup(like the form), you can access them using 
-    //document.getElementById and attach event listeners to them.However, when creating elements 
-    // dynamically, you can directly add event listeners to them before appending them to the DOM.
-    function deleteUser(e) {
-        localStorage.removeItem(userID);
-        li.remove();
-    }
-    li.appendChild(deleteButton);
-    //abhi tak li create kia usko text node dia delet button diya
-    //are ab 'li' ko bhi to Dom mai 'ul' elemnt mai as a child append kroge na
-    var userList = document.getElementById('users');
-    userList.appendChild(li);
+            // Call the function to display data
 
-    //creating edit button
-    var editButton = document.createElement('button');
-    //giving functionality to it
-    editButton.textContent = 'edit';
-    editButton.addEventListener('click', editDetails);
-    function editDetails(e) {
-        //localStorage.removeItem(userID);
-        //retrive the data from local storage
-        var retrievedUserDataString = localStorage.getItem(userID);
-        //retrieved data is in the string object from so we need to convert back
-        var retrievedUserData = JSON.parse(retrievedUserDataString);
+            // Reset the form inputs
+            form.reset();
+        }
 
+        function displayDataOnScreen(userData) {
+            var li = document.createElement('li');
+            li.className = 'list-group-item';
 
-        // Populate the form with the user details for editing
-        document.getElementById('name').value = retrievedUserData.name;
-        document.getElementById('email').value = retrievedUserData.email;
-        document.getElementById('number').value = retrievedUserData.number;
-        
-        //remove the data from local and list so that new data
-        //can be entered in place of old data
-        li.remove();
-        localStorage.removeItem(userID);
-    }
-    li.appendChild(editButton);
-    var userLi = document.getElementById('users');
-    userLi.appendChild(li);
+            var name = userData.name;
+            var email = userData.email;
+            var number = userData.number;
 
+            var liname = document.createTextNode(name);
+            li.appendChild(liname);
+            li.appendChild(document.createElement('br'));
 
-    // Reset the form inputs
-    form.reset();
+            li.appendChild(document.createTextNode(email));
+            li.appendChild(document.createElement('br'));
 
-}
-function generateUserId() {
-    return "user_" + Math.random().toString(36).slice(2, 11);
-}
+            li.appendChild(document.createTextNode(number));
+            li.appendChild(document.createElement('br'));
+
+            var deleteButton = document.createElement('button');
+            deleteButton.textContent = 'remove';
+            deleteButton.addEventListener('click', deleteUser);
+
+            function deleteUser(e) {
+                // localStorage.removeItem(userID);
+                li.remove();
+            }
+            li.appendChild(deleteButton);
+
+            var userList = document.getElementById('users');
+            userList.appendChild(li);
+
+            var editButton = document.createElement('button');
+            editButton.textContent = 'edit';
+            editButton.addEventListener('click', editDetails);
+
+            function editDetails(e) {
+                // localStorage.removeItem(userID);
+                var retrievedUserDataString = localStorage.getItem(userID);
+                var retrievedUserData = JSON.parse(retrievedUserDataString);
+
+                // Populate the form with the user details for editing
+                document.getElementById('name').value = retrievedUserData.name;
+                document.getElementById('email').value = retrievedUserData.email;
+                document.getElementById('number').value = retrievedUserData.number;
+
+                li.remove();
+                localStorage.removeItem(userID);
+            }
+            li.appendChild(editButton);
+
+            var userLi = document.getElementById('users');
+            userLi.appendChild(li);
+        }
+
+        function generateUserId() {
+            return "user_" + Math.random().toString(36).slice(2, 11);
+        }
