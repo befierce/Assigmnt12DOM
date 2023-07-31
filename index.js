@@ -1,3 +1,15 @@
+//this will retrieve the data from the server when the page will load
+window.addEventListener("DOMContentLoaded", ()=>{
+    axios.get("https://crudcrud.com/api/ed2cdcf07b7a489bbf767198d25a7f7c/AppointmentData")
+         .then((resolve)=>{console.log(resolve)
+        //if the promise is resolved the whole data with header data and config comes
+        for(var i = 0; i <resolve.data.length; i++){
+            displayDataOnScreen(resolve.data[i]) 
+        }
+        })
+         .catch((error)=>{console.log(error)})
+})
+
 var form = document.getElementById('details');
         form.addEventListener('submit', addUser);
 
@@ -7,7 +19,6 @@ var form = document.getElementById('details');
             var email = document.getElementById('email').value;
             var number = document.getElementById('number').value;
 
-   
             var userData = {
                 name: name,
                 email: email,
