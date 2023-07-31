@@ -7,7 +7,7 @@ var form = document.getElementById('details');
             var email = document.getElementById('email').value;
             var number = document.getElementById('number').value;
 
-            // Saving data to the local storage
+   
             var userData = {
                 name: name,
                 email: email,
